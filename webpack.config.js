@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-    entry: "./src/app.js",
+    entry: "./src/playground/redux-expensify.js",
     mode: "production",
     output: {
         path: path.join(__dirname, "public"),
@@ -15,7 +15,7 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
-                test: /\.?css$/,
+                test: /\.s?css$/,
                 use: [
                     'style-loader',
                     'css-loader',
