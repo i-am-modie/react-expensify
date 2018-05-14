@@ -18,14 +18,18 @@ store.dispatch(addExpense({
 }));
 store.dispatch(addExpense({
     description: "Gas Bill",
-    amount: 500,
+    createdAt: 1000,
+}));
+store.dispatch(addExpense({
+    description: "Rent",
+    amount: 109500,
 }));
 
 console.log(getVisibleExpenses(store.getState().expenses, store.getState().filters));
-store.dispatch(setTextFilter("water"));
-setTimeout(()=>{
-    store.dispatch(setTextFilter("bill"));
-},3000);
+// store.dispatch(setTextFilter("water"));
+// setTimeout(()=>{
+//     store.dispatch(setTextFilter("bill"));
+// },3000);
 console.log(getVisibleExpenses(store.getState().expenses, store.getState().filters));
 
 const jsx = (
