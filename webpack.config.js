@@ -7,7 +7,7 @@ module.exports = env => {
     return {
         entry: "./src/app.js",
         output: {
-            path: path.join(__dirname, "public"),
+            path: path.join(__dirname, "public", "dist"),
             filename: "bundle.js"
         },
         module: {
@@ -22,30 +22,29 @@ module.exports = env => {
                     use: CSSExtract.extract({
                         use: [
                             {
-                                loader: 'css-loader',
+                                loader: "css-loader",
                                 options: {
                                     sourceMap: true
                                 }
                             },
                             {
-                                loader: 'sass-loader',
+                                loader: "sass-loader",
                                 options: {
                                     sourceMap: true
                                 }
-                            },
+                            }
                         ]
                     })
                 }
             ]
         },
-        plugins: [
-            CSSExtract,
-        ],
+        plugins: [CSSExtract],
         devtool: isProduction ? "source-mapnp" : "inline-source-map",
         devServer: {
             historyApiFallback: true,
             contentBase: path.join(__dirname, "public"),
-            allowedHosts: ["localhost"]
+            allowedHosts: ["localhost"],
+            publicPath: "/dist/"
         }
     };
 };
