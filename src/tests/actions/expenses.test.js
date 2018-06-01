@@ -7,7 +7,8 @@ import {
     editExpense,
     setExpenses,
     startSetExpenses,
-    startRemoveExpense
+    startRemoveExpense,
+    startEditExpense
 } from "../../actions/expenses";
 import expenses from "../fixtures/expenses";
 import db from "../../firebase/firebase";
@@ -127,24 +128,54 @@ test("should fetch the expenses from firebase database", done => {
     });
 });
 
-test('should not remove expense from firebase', () => {
+test("should not remove expense from firebase", () => {
     expect(() => {
-        startRemoveExpense()
-    }).toThrowError('no id');
+        startRemoveExpense({id: ' '});
+    }).toThrowError("no id");
 });
 
-test('should remove expense from firebase', (done) => {
+test("should remove expense from firebase", done => {
     const store = createMockStore(expenses);
     const id = expenses[0].id;
-    store.dispatch(startRemoveExpense({id})).then(() => {
-        const actions = store.getActions();
-        expect(actions[0]).toEqual({
-            type: 'REMOVE_EXPENSE',
-            id
+    store
+        .dispatch(startRemoveExpense({id}))
+        .then(() => {
+            const actions = store.getActions();
+            expect(actions[0]).toEqual({
+                type: "REMOVE_EXPENSE",
+                id
+            });
+            return db.ref(`expenses/${id}`).once("value");
+        })
+        .then(snapshot => {
+            expect(snapshot.val()).toBeFalsy();
+            done();
         });
-        return db.ref(`expenses/${id}`).once('value');
-    }).then(snapshot => {
-        expect(snapshot.val()).toBeFalsy();
-        done();
-    })
+});
+
+test("should edit expense from firebase", done => {
+    const store = createMockStore(expenses);
+    const id = expenses[1].id;
+    const updates = {
+        description: "edit test",
+        amount: expenses[1].amount + 10
+    };
+    store.dispatch(startEditExpense(id, updates))
+        .then(() => {
+            const actions = store.getActions();
+            expect(actions[0]).toEqual({
+                type: "EDIT_EXPENSE",
+                id,
+                updates
+            });
+            return db.ref(`expenses/${id}`).once("value");
+        })
+        .then(snapshot => {
+            expect(snapshot.val()).toEqual({
+                note: expenses[1].note,
+                createdAt: expenses[1].createdAt,
+                ...updates,
+            });
+            done();
+        });
 });
