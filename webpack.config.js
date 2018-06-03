@@ -15,6 +15,7 @@ module.exports = env => {
     const CSSExtract = new ExtractTextPlugin("styles.css");
     return {
         entry: "./src/app.js",
+        mode: process.env.NODE_ENV,
         output: {
             path: path.join(__dirname, "public", "dist"),
             filename: "bundle.js"
